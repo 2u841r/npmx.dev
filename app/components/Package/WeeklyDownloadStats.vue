@@ -63,7 +63,7 @@ function handleModalTransitioned() {
 }
 
 const { fetchPackageDownloadEvolution } = useCharts()
-const numberFormatter = useNumberFormatter()
+const numberFormatter = useNumberFormatter({ maximumFractionDigits: 0 })
 
 const { accentColors, selectedAccentColor } = useAccentColor()
 
