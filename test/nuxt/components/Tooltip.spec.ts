@@ -92,7 +92,9 @@ describe('TooltipApp hides when the page loses focus', () => {
 
   it('hides when the document becomes hidden', async () => {
     const wrapper = await mountVisibleTooltip()
-    const hidden = Object.getOwnPropertyDescriptor(Document.prototype, 'hidden')
+    // `hidden` normally lives on the prototype, so there is no own descriptor to
+    // put back - deleting the override is what restores the initial state
+    const ownHidden = Object.getOwnPropertyDescriptor(document, 'hidden')
     Object.defineProperty(document, 'hidden', { configurable: true, get: () => true })
     try {
       document.dispatchEvent(new Event('visibilitychange'))
@@ -100,7 +102,7 @@ describe('TooltipApp hides when the page loses focus', () => {
 
       expect(findTooltip()).toBeNull()
     } finally {
-      if (hidden) Object.defineProperty(document, 'hidden', hidden)
+      if (ownHidden) Object.defineProperty(document, 'hidden', ownHidden)
       else Reflect.deleteProperty(document, 'hidden')
       wrapper.unmount()
     }
